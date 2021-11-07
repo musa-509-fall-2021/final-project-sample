@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "final-project-sample"
+version = "0.1.0"
+description = ""
+authors = ["Mjumbe Poe <mjumbewu@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+[tool.poetry.dev-dependencies]
+geopandas = "^0.10.2"
+jupyterlab = "^3.2.2"
+matplotlib = "^3.4.3"
+branca = "^0.4.2"
+folium = "^0.12.1"
+mapclassify = "^2.4.3"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
