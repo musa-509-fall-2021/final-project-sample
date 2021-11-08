@@ -16,7 +16,7 @@ Because the pace of change for a business district can be slow, and because patt
 
 These metrics will allow stakeholders to target different programs at each district. For example:
 - low rates of local business ownership may prompt business education programs for community residents
-- increasing average time since
+- increasing average time since last renovations may prompt grant program for building facade or internals rejuvenation
 - low foot traffic in the face of other positively trending metrics may prompt public space activation events
 
 ## Stakeholders
@@ -33,3 +33,8 @@ These metrics will allow stakeholders to target different programs at each distr
 - **Registerd Community Organization boundaries** -- [OpenDataPhilly](https://opendataphilly.org/dataset/registered-community-organizations), updated as needed (created 2014, most recent updates from 2021)
 - **SafeGraph foot traffic** -- Ideally I would set up a [monthly delivery](https://docs.safegraph.com/docs/bulk-data-delivery) from SafeGraph, but it's uncertain if that's available on an academic account. May simulate that for now, by manually extracting latest extract to GCS each month. Possibly use a combination of manual bulk data access and [API calls](https://docs.safegraph.com/reference#places-api-overview-new). Schema docs are [here](https://docs.safegraph.com/docs/monthly-patterns).
 - **US Census Block Group demographics** -- BigQuery public datasets, updated with the national census, i.e. yearly estimates at its most frequent
+
+## Wireframes
+
+* [Initial sketches](https://photos.app.goo.gl/aTrqxMn4UsWYxtj9A)
+* [More detail](https://docs.google.com/presentation/d/1Q8ZN695hFtN3WB_lLBnfi-GiVVTZZLMLBIGd4cH4mAQ/edit?usp=sharing)
