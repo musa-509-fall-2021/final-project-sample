@@ -5,7 +5,11 @@ description = ""
 authors = ["Mjumbe Poe <mjumbewu@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.8,<3.10"
+sqlalchemy-bigquery = "^1.2.1"
+SQLAlchemy = "^1.4.26"
+google-cloud-storage = "^1.42.3"
+google-cloud-bigquery-storage = "^2.10.0"
 
 [tool.poetry.dev-dependencies]
 geopandas = "^0.10.2"
@@ -14,6 +18,7 @@ matplotlib = "^3.4.3"
 branca = "^0.4.2"
 folium = "^0.12.1"
 mapclassify = "^2.4.3"
+python-dotenv = "^0.19.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
