@@ -3,5 +3,5 @@
 SELECT
     placekey,
     ANY_VALUE(ST_GEOGPOINT(longitude, latitude)) as geog
-FROM safegraph.safegraph_patterns_*
+FROM `safegraph.safegraph_patterns_*`
 GROUP BY placekey
