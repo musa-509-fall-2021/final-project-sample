@@ -10,9 +10,11 @@ sqlalchemy-bigquery = "^1.2.1"
 SQLAlchemy = "^1.4.26"
 google-cloud-storage = "^1.42.3"
 google-cloud-bigquery-storage = "^2.10.0"
+geopandas = "^0.10.2"
+pandas-gbq = "^0.16.0"
+Jinja2 = "^3.0.3"
 
 [tool.poetry.dev-dependencies]
-geopandas = "^0.10.2"
 jupyterlab = "^3.2.2"
 matplotlib = "^3.4.3"
 branca = "^0.4.2"

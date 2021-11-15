@@ -1,0 +1,29 @@
+<html>
+<head>
+  <title>Commercial Corridors Health Report - Overview</title>
+</head>
+<body>
+
+  <nav>
+    <ul>
+      <li><a href="/">Overview</a></li>
+      {% for district_name, district_corridors in corridors | groupby('planning_district_name') %}
+        <li>
+          <h3>{{ district_name }}</h3>
+          <ul>
+            {% for corridor in district_corridors %}
+              <li><a href="{{ corridor.filename }}.html">{{ corridor.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
+
+  <section id="content">
+    <h1>Commercial Corridor Health Report</h1>
+
+    <p>The healthiest corridor is {{ overview.most_healthy_corridor_name }}, which has high scores across every metric, while the least healthy corridor is {{ overview.least_healthy_corridor_name }}, which has particularly low scores for  _____. On average, across the city, commercial corridors seem [very|moderately|un]healthy.</p>
+  </section>
+</body>
+</html>
