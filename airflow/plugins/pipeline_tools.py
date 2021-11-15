@@ -126,4 +126,6 @@ def run_transform_gbq(dataset_name, table_name, rel_to):
     with open(query_path) as query_file:
         query = query_file.read()
 
-    return client.query(f'CREATE OR REPLACE TABLE `{dataset_name}.{table_name}` AS ({query})')
+    print(f'Creating or replacing table `{dataset_name}.{table_name}`...')
+    query_job = client.query(f'CREATE OR REPLACE TABLE `{dataset_name}.{table_name}` AS ({query})')
+    return query_job.result()
