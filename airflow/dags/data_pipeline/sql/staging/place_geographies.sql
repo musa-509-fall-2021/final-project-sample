@@ -1,4 +1,4 @@
--- Create a geography from the lng/lat in the safegraph tables for each place
+-- Create a geography from the lng/lat in the safegraph tables for each place.
 
 SELECT
     placekey,

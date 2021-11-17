@@ -1,5 +1,5 @@
 -- For each yyyy-mm-dd, Create a row with the total visit count.
--- Depends on staging.dated_safegraph_patterns
+-- Depends on staging.dated_safegraph_patterns.
 
 SELECT
     placekey,

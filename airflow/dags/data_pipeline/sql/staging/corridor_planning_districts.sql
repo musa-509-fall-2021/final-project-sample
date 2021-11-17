@@ -1,4 +1,4 @@
--- Some corridors (one in particular -- 31st & Norris) has a NULL p_dist value.
+-- Some corridors (one in particular -- 31st & Norris) have a NULL p_dist value.
 -- We deal with any exceptions here.
 
 SELECT
