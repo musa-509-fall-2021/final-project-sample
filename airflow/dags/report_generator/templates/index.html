@@ -38,6 +38,9 @@
     <div id="overviewMap"></div>
   </section>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"
+   integrity="sha512-FHsFVKQ/T1KWJDGSbrUhTJyS1ph3eRrxI228ND0EGaEp6v4a/vGwPWd3Dtd/+9cI7ccofZvl/wulICEurHN1pg=="
+   crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
    crossorigin=""></script>
@@ -57,7 +60,11 @@
     baseLayer.addTo(overviewMap);
 
     var mapdata = {{ overview_map_data }};
-    var dataLayer = L.geoJSON(mapdata)
+    var dataLayer = L.geoJSON(mapdata, {
+      style: {
+        weight: 1,
+      }
+    });
     dataLayer.addTo(overviewMap);
   </script>
 </body>
