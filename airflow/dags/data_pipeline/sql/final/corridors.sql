@@ -1,10 +1,11 @@
 SELECT
     name,
-    LOWER(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(name, '.', ''), ' / ', ''), '/', ''), ' - ', ' '), ' & ', ' '), ' ', '-')) as filename,
-    CASE
-        WHEN p_dist IS NOT NULL THEN p_dist
-        WHEN name = '31st and Norris' THEN 'North'
-    END AS planning_district_name,
+    filename,
+    planning_district_name,
+    health,
     geometry AS geog
 FROM `city_of_phl.commercial_corridors`
+JOIN staging.corridor_health USING (name)
+JOIN staging.corridor_filenames USING (name)
+JOIN staging.corridor_planning_districts (name)
 ORDER BY planning_district_name, name
