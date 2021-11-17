@@ -94,8 +94,7 @@ def geopandas_to_gbq(geodataframe, dataset_name, table_name, replace_table=True)
     But that function won't create geography fields in the appropriate places.
     Instead it will upload geographic data as a string.
     """
-    # from shapely.validation import make_valid
-    # geodataframe.set_geometry(geodataframe.geometry.apply(make_valid), inplace=True)
+    import warnings; warnings.filterwarnings('ignore', message='.*initial implementation of Parquet.*')
 
     geog_field_name = geodataframe._geometry_column_name
     print(f'Loading data into `{dataset_name}.{table_name}` with geography field `{geog_field_name}`...')
