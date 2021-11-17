@@ -112,14 +112,12 @@ def geopandas_to_gbq(geodataframe, dataset_name, table_name, replace_table=True)
     return job.result()
 
 
-def run_transform_gbq(dataset_name, table_name, rel_to):
+def run_transform_gbq(dataset_name, table_name, sql_root):
     """
     This function will look for a file named 'sql/{dataset_name}/{table_name}.sql'
     next to the file specified by rel_to, and then create a table in the dataset
     with the specified name.
     """
-    rel_path = pathlib.Path(rel_to)
-    sql_root = rel_path.parent / 'sql'
     query_path = sql_root / dataset_name / f'{table_name}.sql'
 
     client = bigquery.Client()
