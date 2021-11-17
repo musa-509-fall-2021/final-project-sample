@@ -14,6 +14,7 @@ def main():
     output = template.render(
         corridors=corridors_gdf.to_dict('records'),
         overview=overview_df.to_dict('records')[0],
+        overview_map_data=corridors_gdf.to_json(),
     )
     return output
 
