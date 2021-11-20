@@ -39,6 +39,10 @@ def load_patterns_file(zipfile_path, loaded_file_ids):
 
                     print(f'Writing the file to bigquery as safegraph_patterns_{file_id}')
                     try:
+                        # Since these tables are so large, and because past data
+                        # shouldn't change, I'm going to not load data that's
+                        # already present in the dataset. To re-trigger a load,
+                        # I'll have to delete the existing table.
                         safegraph_patterns_df.to_gbq(f'{dataset_name}.safegraph_patterns_{file_id}', if_exists='fail')
                     except TableCreationError:
                         print('Table seems to already exist. Skipping.')
