@@ -1,0 +1,19 @@
+sort_order,corridor_p_dist,cardinal_dir
+1,Central,C
+2,Lower North,N
+3,North,N
+4,Upper North,N
+5,Lower NW,NW
+6,Upper NW,NW
+7,West Park,W
+8,West,W
+9,University SW,SW
+10,Lower SW,SW
+11,South,S
+12,Lower South,S
+13,River Wards,E
+14,N Delaware,E
+15,Lower NE,NE
+16,Central NE,NE
+17,Lower Far NE,NE
+18,Upper Far NE,NE
