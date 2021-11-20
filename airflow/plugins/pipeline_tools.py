@@ -68,7 +68,7 @@ def gcs_to_local_file(gcs_bucket_name, gcs_blob_name, local_file_name=None):
     return local_file_name
 
 
-def local_file_to_gcs(local_file_name, gcs_bucket_name, gcs_blob_name):
+def local_file_to_gcs(local_file_name, gcs_bucket_name, gcs_blob_name, content_type=None):
     """
     This function uploads a file from the local machine to Google Cloud Storage.
     """
@@ -78,7 +78,7 @@ def local_file_to_gcs(local_file_name, gcs_bucket_name, gcs_blob_name):
     storage_robot = storage.Client()
     bucket = storage_robot.bucket(gcs_bucket_name)
     blob = bucket.blob(gcs_blob_name)
-    blob.upload_from_filename(local_file_name)
+    blob.upload_from_filename(local_file_name, content_type=content_type)
 
 
 def gcs_to_db(gcs_bucket_name, gcs_blob_name, db_conn, table_name, column_names=None):
