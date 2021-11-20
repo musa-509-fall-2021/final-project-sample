@@ -1,8 +1,10 @@
 import geopandas as gpd
 import pandas as pd
+from tempfile import NamedTemporaryFile
 from jinja2 import Environment, PackageLoader
+from pipeline_tools import local_file_to_gcs
 
-def main():
+def main(ds):
     corridors_df = pd.read_gbq('SELECT * FROM final.corridors')
     corridors_df.geog = gpd.GeoSeries.from_wkt(corridors_df.geog)
     corridors_gdf = gpd.GeoDataFrame(corridors_df, geometry='geog')
@@ -16,7 +18,16 @@ def main():
         overview=overview_df.to_dict('records')[0],
         overview_map_data=corridors_gdf.to_json(),
     )
-    return output
+
+    with NamedTemporaryFile(mode='w') as local_file:
+        local_file.write(output)
+        local_file_to_gcs(
+            local_file_name=local_file.name,
+            gcs_bucket_name='mjumbewu_musa509_2021_corridors',
+            gcs_blob_name=f'{ds}/index.html',
+            content_type='text/html,'
+        )
 
 if __name__ == '__main__':
-    print(main())
+    import datetime as dt
+    main(ds=dt.date.today())
