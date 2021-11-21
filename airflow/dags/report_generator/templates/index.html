@@ -7,14 +7,26 @@
    crossorigin=""/>
 
   <style>
+    body {
+      display: grid;
+      grid-template-columns: auto 40rem;
+      grid-template-areas:
+        "main-nav content"
+    }
     #overviewMap {
       height: 500px;
+    }
+    #mainNav {
+      grid-area: main-nav;
+    }
+    #content {
+      grid-area: content;
     }
   </style>
 </head>
 <body>
 
-  <nav>
+  <nav id="mainNav">
     <ul>
       <li><a href="/">Overview</a></li>
       {% for district_name, district_corridors in corridors | groupby('planning_district_name') %}
@@ -46,7 +58,7 @@
    crossorigin=""></script>
 
   <script>
-    var initialCenter = [40, -75.2];  // <-- Latitude, Longitude
+    var initialCenter = [40.001, -75.134];  // <-- Latitude, Longitude
     var initialZoom = 11;
     var overviewMap = L.map('overviewMap').setView(initialCenter, initialZoom);
 
