@@ -1,5 +1,6 @@
 import geopandas as gpd
 import pandas as pd
+from pathlib import Path
 from tempfile import NamedTemporaryFile
 from jinja2 import Environment, PackageLoader
 from pipeline_tools import local_file_to_gcs
@@ -19,7 +20,10 @@ def main(ds):
         overview_map_data=corridors_gdf.to_json(),
     )
 
-    with NamedTemporaryFile(mode='w') as local_file:
+    output_folder = Path(__file__).parent / '_reports' / ds.isoformat()
+    output_folder.mkdir(parents=True, exist_ok=True)
+
+    with open(output_folder / 'index.html', 'w') as local_file:
         local_file.write(output)
         local_file_to_gcs(
             local_file_name=local_file.name,
