@@ -9,9 +9,14 @@
   <style>
     body {
       display: grid;
-      grid-template-columns: auto 40rem;
+      grid-template-columns: auto 1fr;
       grid-template-areas:
         "main-nav content"
+    }
+    h1, p {
+      max-width: 45rem;
+      margin-left: auto;
+      margin-right: auto;
     }
     #overviewMap {
       height: 500px;
@@ -21,6 +26,32 @@
     }
     #content {
       grid-area: content;
+    }
+
+    .legend {
+      padding: 6px 8px;
+      background: white;
+      background: rgba(255,255,255,0.8);
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      border: 1px solid black;
+      border-radius: 5px;
+    }
+    .legend ol {
+      list-style: none;
+      padding: 0;
+      display: flex;
+    }
+    .legend li {
+      display: flex;
+      gap: 0.25em;
+    }
+    .legend li:first-child {
+      flex-direction: row-reverse;
+    }
+    .key-color {
+      display: block;
+      width: 1rem;
+      height: 1rem;
     }
   </style>
 </head>
@@ -71,13 +102,48 @@
     });
     baseLayer.addTo(overviewMap);
 
+    function getOverviewMapStyle(feature) {
+      var category = feature.properties['health_bin'];
+      var featureColor;
+
+      switch (category) {
+        case 1:  featureColor = '#ffffcc'; break;
+        case 2:  featureColor = '#a1dab4'; break;
+        case 3:  featureColor = '#41b6c4'; break;
+        case 4:  featureColor = '#2c7fb8'; break;
+        case 5:  featureColor = '#253494'; break;
+        default: featureColor = 'red'; break;
+      }
+
+      return {
+        color: featureColor,
+        weight: 1,
+        fillColor: featureColor,
+        fillOpacity: 0.7,
+      };
+    }
+
     var mapdata = {{ overview_map_data }};
     var dataLayer = L.geoJSON(mapdata, {
-      style: {
-        weight: 1,
-      }
+      style: getOverviewMapStyle
     });
     dataLayer.addTo(overviewMap);
+
+    var overviewLegend = L.control({position: 'bottomright'});
+    overviewLegend.onAdd = function (map) {
+      var container = L.DomUtil.create('div', 'info legend');
+      container.innerHTML = `
+          <ol>
+            <li><span class="key-color" style="background: #ffffcc;"></span><span class="key-label">Low</span></li>
+            <li><span class="key-color" style="background: #a1dab4;"></span></li>
+            <li><span class="key-color" style="background: #41b6c4;"></span></li>
+            <li><span class="key-color" style="background: #2c7fb8;"></span></li>
+            <li><span class="key-color" style="background: #253494;"></span><span class="key-label">High</span></li>
+          </ol>
+          `;
+      return container;
+    };
+    overviewLegend.addTo(overviewMap);
   </script>
 </body>
 </html>
