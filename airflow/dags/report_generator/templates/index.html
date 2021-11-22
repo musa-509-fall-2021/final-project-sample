@@ -5,8 +5,14 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
    crossorigin=""/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
 
   <style>
+    html {
+      font-family: 'Merriweather', serif;
+    }
     body {
       display: grid;
       grid-template-columns: auto 1fr;
@@ -23,6 +29,8 @@
     }
     #mainNav {
       grid-area: main-nav;
+      max-height: 100vh;
+      overflow-y: scroll;
     }
     #content {
       grid-area: content;
@@ -76,7 +84,7 @@
   <section id="content">
     <h1>Commercial Corridor Health Report</h1>
 
-    <p>The healthiest corridor is {{ overview.most_healthy_corridor_name }}, which has high scores across every metric, while the least healthy corridor is {{ overview.least_healthy_corridor_name }}, which has particularly low scores for  _____. On average, across the city, commercial corridors seem [very|moderately|un]healthy.</p>
+    <p>The corridor that has seen the highest density of visits in the past year is <strong>{{ overview.most_healthy_corridor_name }}</strong>. The corridor that has seen the lowest density of visits in the past year is <strong>{{ overview.least_healthy_corridor_name }}</strong>. On average, across the city, commercial corridors seem [very|moderately|un]healthy.</p>
 
     <div id="overviewMap"></div>
   </section>
