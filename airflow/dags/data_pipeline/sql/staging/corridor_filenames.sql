@@ -6,7 +6,7 @@
 -- Replaces spaces and ampersands with "-"
 
 SELECT
-    name,
+    corridorkey,
     LOWER(
         REPLACE(
         REPLACE(
@@ -22,4 +22,4 @@ SELECT
             ' & ', ' '),
             ' '  , '-')
         ) as filename,
-FROM `city_of_phl.commercial_corridors`
+FROM staging.corridor_base

@@ -3,6 +3,7 @@ WITH
 least_healthy_corridor AS (
     SELECT name
     FROM staging.corridor_health
+    JOIN staging.corridor_base USING (corridorkey)
     ORDER BY health ASC
     LIMIT 1
 ),
@@ -10,6 +11,7 @@ least_healthy_corridor AS (
 most_healthy_corridor AS (
     SELECT name
     FROM staging.corridor_health
+    JOIN staging.corridor_base USING (corridorkey)
     ORDER BY health DESC
     LIMIT 1
 )

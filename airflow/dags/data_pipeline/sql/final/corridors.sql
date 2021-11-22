@@ -3,10 +3,10 @@ SELECT
     filename,
     planning_district_name,
     health,
+    NTILE(5) OVER (ORDER BY health) as health_bin,
     geog
-FROM `city_of_phl.commercial_corridors`
-JOIN staging.corridor_health USING (name)
-JOIN staging.corridor_filenames USING (name)
-JOIN staging.corridor_planning_districts USING (name)
-JOIN staging.corridor_geographies USING (name)
+FROM staging.corridor_base
+JOIN staging.corridor_health USING (corridorkey)
+JOIN staging.corridor_filenames USING (corridorkey)
+JOIN staging.corridor_planning_districts USING (corridorkey)
 ORDER BY planning_district_name, name

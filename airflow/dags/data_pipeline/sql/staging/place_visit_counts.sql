@@ -3,9 +3,7 @@
 
 SELECT
     placekey,
-    year,
-    month,
-    day,
+    DATE(year, month, day_0 + 1) as visit_date,
     CAST(visit_count AS INTEGER) AS visit_count
 FROM staging.dated_safegraph_patterns
-CROSS JOIN UNNEST(JSON_EXTRACT_ARRAY(visits_by_day)) AS visit_count WITH OFFSET day
+CROSS JOIN UNNEST(JSON_EXTRACT_ARRAY(visits_by_day)) AS visit_count WITH OFFSET day_0
