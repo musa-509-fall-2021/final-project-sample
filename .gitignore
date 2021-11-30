@@ -1,4 +1,5 @@
 .env
+!airflow/.env
 *.pyc
 *.ipynb_checkpoints/
 output/
