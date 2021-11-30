@@ -1,4 +1,5 @@
 import json
+import os
 import re
 from gzip import GzipFile
 from zipfile import ZipFile
@@ -29,6 +30,9 @@ def main():
             gcs_blob_name=blob_name,
         )
         load_patterns_file(zipfile_path, loaded_file_ids)
+
+        # Clean up; these files can be pretty large
+        os.remove(zipfile_path)
 
 
 def load_patterns_file(zipfile_path, loaded_file_ids):
