@@ -5,6 +5,9 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
    crossorigin=""/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
+   integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw=="
+   crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
@@ -66,6 +69,17 @@
 <body>
 
   <nav id="mainNav">
+    <select id="corridorSelect">
+      <option value="/">Overview</option>
+      {% for district_name, district_corridors in corridors | groupby('planning_district_name') %}
+        <optgroup label="{{ district_name }}">
+          {% for corridor in district_corridors %}
+            <option value="{{ corridor.filename }}.html">{{ corridor.name }}</a></option>
+          {% endfor %}
+        </optgroup>
+      {% endfor %}
+    </select>
+
     <ul>
       <li><a href="/">Overview</a></li>
       {% for district_name, district_corridors in corridors | groupby('planning_district_name') %}
@@ -95,8 +109,16 @@
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
    crossorigin=""></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+   integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+   crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
+   integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
+   crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <script>
+    $('#corridorSelect').select2().on('change', evt => { window.location = evt.target.value });
+
     var initialCenter = [40.001, -75.134];  // <-- Latitude, Longitude
     var initialZoom = 11;
     var overviewMap = L.map('overviewMap').setView(initialCenter, initialZoom);
