@@ -1,15 +1,34 @@
 import json
+import re
 from gzip import GzipFile
 from zipfile import ZipFile
+
+from google.cloud import storage
 import pandas as pd
 from pandas_gbq.gbq import TableCreationError
-import re
+from pipeline_tools import gcs_to_local_file
 
 
-def main(**kwargs):
+def main():
+    bucket_name = 'mjumbewu_cloudservices'
+    blob_folder = f'safegraph_patterns/'
+
+    storage_client = storage.Client()
+    bucket = storage_client.get_bucket(bucket_name)
+    blobs = bucket.list_blobs(prefix=blob_folder)
+
     loaded_file_ids = set()
-    zipfile_path = '/home/mjumbewu/Code/musa/musa-509/data/SafeGraph Data Purchase Nov-02-2021.zip'
-    load_patterns_file(zipfile_path, loaded_file_ids)
+
+    for blob in blobs:
+        blob_name = blob.name
+        if not blob_name.endswith('.zip'):
+            continue
+
+        zipfile_path = gcs_to_local_file(
+            gcs_bucket_name=bucket_name,
+            gcs_blob_name=blob_name,
+        )
+        load_patterns_file(zipfile_path, loaded_file_ids)
 
 
 def load_patterns_file(zipfile_path, loaded_file_ids):
@@ -54,7 +73,6 @@ def load_patterns_file(zipfile_path, loaded_file_ids):
                     #   {'geo_id': geoid2, 'count': count2},
                     #   ...
                     # ]
-                    # safegraph_patterns_df.visitor_home_cbgs.apply(print)
                     safegraph_patterns_df['visitor_home_cbgs'] = safegraph_patterns_df.visitor_home_cbgs.fillna('{}').apply(
                         lambda d: json.dumps([
                             {'geo_id': geo_id, 'count': count}
