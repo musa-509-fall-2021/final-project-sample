@@ -1,3 +1,4 @@
+import json
 from gzip import GzipFile
 from zipfile import ZipFile
 import pandas as pd
@@ -36,6 +37,30 @@ def load_patterns_file(zipfile_path, loaded_file_ids):
 
                     print('Reading the ungzipped csv file')
                     safegraph_patterns_df = pd.read_csv(patterns_csv_file)
+
+                    # Transform the visitor_home_cbgs column so that it's easier
+                    # to work with in SQL. Change it from:
+                    #
+                    # {
+                    #   geoid1: count1,
+                    #   geoid2: count2,
+                    #   ...
+                    # }
+                    #
+                    # To:
+                    #
+                    # [
+                    #   {'geo_id': geoid1, 'count': count1},
+                    #   {'geo_id': geoid2, 'count': count2},
+                    #   ...
+                    # ]
+                    # safegraph_patterns_df.visitor_home_cbgs.apply(print)
+                    safegraph_patterns_df['visitor_home_cbgs'] = safegraph_patterns_df.visitor_home_cbgs.fillna('{}').apply(
+                        lambda d: json.dumps([
+                            {'geo_id': geo_id, 'count': count}
+                            for geo_id, count in json.loads(d).items()
+                        ])
+                    )
 
                     print(f'Writing the file to bigquery as safegraph_patterns_{file_id}')
                     try:
