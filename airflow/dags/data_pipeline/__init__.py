@@ -91,10 +91,10 @@ with DAG(dag_id='data_pipeline',
 
     sql_dir = Path(__file__).parent / 'sql'
 
-    transform_staging_buildings_task = PythonOperator(
-        task_id='transform_staging_buildings',
+    transform_staging_building_base_task = PythonOperator(
+        task_id='transform_staging_building_base',
         python_callable=run_transform_gbq,
-        op_args=['staging', 'buildings', sql_dir],
+        op_args=['staging', 'building_base', sql_dir],
     )
     transform_staging_corridor_base_task = PythonOperator(
     task_id='transform_staging_corridor_base',
@@ -188,7 +188,7 @@ with DAG(dag_id='data_pipeline',
         load_safegraph_patterns_task,
     ]
 
-    transform_staging_buildings_task << load_tasks
+    transform_staging_building_base_task << load_tasks
     transform_staging_corridor_base_task << load_tasks
     transform_staging_corridor_filenames_task << load_tasks
     transform_staging_corridor_health_task << load_tasks
@@ -202,7 +202,7 @@ with DAG(dag_id='data_pipeline',
     transform_staging_place_visitor_home_cbgs_task << load_tasks
 
     transform_staging_corridor_base_task >> [
-        transform_staging_buildings_task,
+        transform_staging_building_base_task,
         transform_staging_corridor_visitor_home_cbgs_task,
     ]
 
@@ -222,7 +222,7 @@ with DAG(dag_id='data_pipeline',
 
     transform_staging_tasks = DummyOperator(task_id='wait_for_staging_transforms')
     transform_staging_tasks << [
-        transform_staging_buildings_task,
+        transform_staging_building_base_task,
         transform_staging_corridor_base_task,
         transform_staging_corridor_filenames_task,
         transform_staging_corridor_health_task,
