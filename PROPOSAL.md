@@ -19,10 +19,20 @@ These metrics will allow stakeholders to target different programs at each distr
 - increasing average time since last renovations may prompt grant program for building facade or internals rejuvenation
 - low foot traffic in the face of other positively trending metrics may prompt public space activation events
 
+## Goal
+
+* Ensure vibrant healthy commercial corridors throughout the city
+
 ## Stakeholders
 
-* City officials who want to identify commercial districts where additional resources might be helpful.
-* Community groups that advocate for their main streets.
+* City officials (e.g., the Department of Commerce) who want to identify commercial districts where additional resources might be helpful.
+* Community groups (e.g., Registered Community Organizations) that advocate for their main streets.
+
+## Decisions
+
+* (Commerce) Which commercial corridors to funnel finite resources to spur health
+* (Commerce) What resources to devote to each commercial corridor
+* (RCOs) On what grounds to request resources from the City
 
 ## Data sources
 

@@ -10,7 +10,7 @@
     - Businesses
       - [ ] Number of businesses (by category)
       - [ ] Age of businesses
-      - [ ] Share of owners that live within 2 miles
+      - [ ] Share of owners that live within 2 miles (requires a geocoder 🙁)
       - [ ] Diversity of businesses: how many business categories have at least (2? 3?) businesses?
     - Engagement
       - [ ] Distance from home block group histogram (for visitors from Philadelphia)
