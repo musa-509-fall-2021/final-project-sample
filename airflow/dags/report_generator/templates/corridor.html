@@ -1,0 +1,175 @@
+<html>
+<head>
+  <title>Commercial Corridors Health Report - Overview</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <style>
+    html {
+      font-family: 'Merriweather', serif;
+    }
+    body {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      grid-template-areas:
+        "main-nav content"
+    }
+    h1, p {
+      max-width: 45rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #overviewMap {
+      height: 500px;
+    }
+    #mainNav {
+      grid-area: main-nav;
+      max-height: 100vh;
+      overflow-y: scroll;
+    }
+    #content {
+      grid-area: content;
+    }
+
+    .legend {
+      padding: 6px 8px;
+      background: white;
+      background: rgba(255,255,255,0.8);
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      border: 1px solid black;
+      border-radius: 5px;
+    }
+    .legend ol {
+      list-style: none;
+      padding: 0;
+      display: flex;
+    }
+    .legend li {
+      display: flex;
+      gap: 0.25em;
+    }
+    .legend li:first-child {
+      flex-direction: row-reverse;
+    }
+    .key-color {
+      display: block;
+      width: 1rem;
+      height: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="mainNav">
+    <ul>
+      <li><a href="/">Overview</a></li>
+      {% for district_name, district_corridors in corridors | groupby('planning_district_name') %}
+        <li>
+          <h3>{{ district_name }}</h3>
+          <ul>
+            {% for corridor in district_corridors %}
+              <li><a href="{{ corridor.filename }}.html">{{ corridor.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
+
+  <section id="content">
+    <header>
+      <h1>{{ corridor.name }}</h1>
+      <div class="subtitle">
+        Commercial Corridor Health Report
+      </div>
+    </header>
+
+    <p>
+      The <strong>{{ corridor.name }}</strong> corridor has seen {{ corridor.visit_count }} visits in the past year. This is
+      {% if corridor.visit_count_bin == 5 %} much higher than average
+      {% elif corridor.visit_count_bin == 4 %} higher than average
+      {% elif corridor.visit_count_bin == 3 %} around average
+      {% elif corridor.visit_count_bin == 2 %} below average
+      {% elif corridor.visit_count_bin == 1 %} far below average
+      {% endif %}
+      with respect to other corridors throughout the city.
+    </p>
+
+    <div id="corridorMap"></div>
+
+    <h2>Buildings</h2>
+    <h2>Businesses</h2>
+    <h2>Engagement</h2>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"
+   integrity="sha512-FHsFVKQ/T1KWJDGSbrUhTJyS1ph3eRrxI228ND0EGaEp6v4a/vGwPWd3Dtd/+9cI7ccofZvl/wulICEurHN1pg=="
+   crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+
+  <script>
+    var initialCenter = [40.001, -75.134];  // <-- Latitude, Longitude
+    var initialZoom = 11;
+    var overviewMap = L.map('overviewMap').setView(initialCenter, initialZoom);
+
+    var baseLayer = new L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-background/{z}/{x}/{y}{r}.{ext}', {
+      	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      	subdomains: 'abcd',
+      	minZoom: 0,
+      	maxZoom: 20,
+      	ext: 'png'
+    });
+    baseLayer.addTo(overviewMap);
+
+    function getOverviewMapStyle(feature) {
+      var category = feature.properties['health_bin'];
+      var featureColor;
+
+      switch (category) {
+        case 1:  featureColor = '#ffffcc'; break;
+        case 2:  featureColor = '#a1dab4'; break;
+        case 3:  featureColor = '#41b6c4'; break;
+        case 4:  featureColor = '#2c7fb8'; break;
+        case 5:  featureColor = '#253494'; break;
+        default: featureColor = 'red'; break;
+      }
+
+      return {
+        color: featureColor,
+        weight: 1,
+        fillColor: featureColor,
+        fillOpacity: 0.7,
+      };
+    }
+
+    var mapdata = {{ overview_map_data }};
+    var dataLayer = L.geoJSON(mapdata, {
+      style: getOverviewMapStyle
+    });
+    dataLayer.addTo(overviewMap);
+
+    var overviewLegend = L.control({position: 'bottomright'});
+    overviewLegend.onAdd = function (map) {
+      var container = L.DomUtil.create('div', 'info legend');
+      container.innerHTML = `
+          <ol>
+            <li><span class="key-color" style="background: #ffffcc;"></span><span class="key-label">Low</span></li>
+            <li><span class="key-color" style="background: #a1dab4;"></span></li>
+            <li><span class="key-color" style="background: #41b6c4;"></span></li>
+            <li><span class="key-color" style="background: #2c7fb8;"></span></li>
+            <li><span class="key-color" style="background: #253494;"></span><span class="key-label">High</span></li>
+          </ol>
+          `;
+      return container;
+    };
+    overviewLegend.addTo(overviewMap);
+  </script>
+</body>
+</html>
