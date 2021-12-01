@@ -7,7 +7,7 @@ from pipeline_tools import local_file_to_gcs
 
 def main(ds):
     # Get the data necessary for the report.
-    corridors_df = pd.read_gbq('SELECT * FROM final.corridors')
+    corridors_df = pd.read_gbq('SELECT * FROM final.corridor_details')
     corridors_df.geog = gpd.GeoSeries.from_wkt(corridors_df.geog)
     corridors_gdf = gpd.GeoDataFrame(corridors_df, geometry='geog')
 
@@ -25,7 +25,7 @@ def main(ds):
     write_overview(corridors_gdf, overview_template, ds, output_folder)
 
     # Write each of the corridor-specific pages.
-    corridors_gdf.apply(write_corridor, axis=1, args=[corridor_template, ds, output_folder])
+    corridors_gdf.apply(write_corridor, axis=1, args=[corridor_template, ds, output_folder, corridors_gdf])
 
 
 def write_overview(corridors_gdf, template, ds, output_folder):
@@ -49,10 +49,19 @@ def write_overview(corridors_gdf, template, ds, output_folder):
         )
 
 
-def write_corridor(corridor, template, ds, output_folder):
+def write_corridor(corridor, template, ds, output_folder, corridors_gdf):
+    import json
+    import shapely.geometry
+
+    # building_age_df = pd.read_gbq('SELECT * from final.building_year_built_chart')
+    # last_update_age_df = pd.read_gbq('SELECT * from final.building_last_update_date_chart')
+
     # Render the corridor data into a tempate
     output = template.render(
         corridor=corridor.to_dict(),
+        corridors=corridors_gdf.to_dict('records'),
+        corridor_map_center=corridor.geog.centroid,
+        corridor_map_data=json.dumps(shapely.geometry.mapping(corridor.geog)),
     )
 
     with open(output_folder / f'{corridor.filename}.html', 'w') as local_file:

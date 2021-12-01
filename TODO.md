@@ -3,7 +3,7 @@
 1.  [x] Get familiar with the content of potential datasets; understand what might inform your metrics, and what holes there still are
     - [x] Corridor health
     - Buildings
-      - [ ] Median age of buildings in each corridor
+      - [x] Median age of buildings in each corridor
       - [ ] Distribution of building age (grouped by 5-year increments)
       - [ ] Distribution of building update age (grouped by 5-year increments)
       - [ ] Corridor need of renovation: median building/update age -- low (under 5 years), medium (5-15 years), high (over 15 years)

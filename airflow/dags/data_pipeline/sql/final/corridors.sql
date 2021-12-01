@@ -2,6 +2,7 @@ SELECT
     name,
     filename,
     planning_district_name,
+
     health,
     NTILE(5) OVER (ORDER BY health) as health_bin,
     geog

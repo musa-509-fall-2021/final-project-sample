@@ -19,12 +19,12 @@
       grid-template-areas:
         "main-nav content"
     }
-    h1, p {
+    h1, h2, h3, h4, h5, h6, p {
       max-width: 45rem;
       margin-left: auto;
       margin-right: auto;
     }
-    #overviewMap {
+    #corridorMap {
       height: 500px;
     }
     #mainNav {
@@ -85,12 +85,13 @@
     <header>
       <h1>{{ corridor.name }}</h1>
       <div class="subtitle">
-        Commercial Corridor Health Report
+        <p>Commercial Corridor Health Report</p>
       </div>
     </header>
 
     <p>
-      The <strong>{{ corridor.name }}</strong> corridor has seen {{ corridor.visit_count }} visits in the past year. This is
+      The <strong>{{ corridor.name }}</strong> corridor has seen
+      {{ "{:,.0f}".format(corridor.visit_count) }} visits in the past year. This is
       {% if corridor.visit_count_bin == 5 %} much higher than average
       {% elif corridor.visit_count_bin == 4 %} higher than average
       {% elif corridor.visit_count_bin == 3 %} around average
@@ -103,6 +104,38 @@
     <div id="corridorMap"></div>
 
     <h2>Buildings</h2>
+    <p>
+      The buildings in the {{ corridor.name }} corridor were mostly built between
+      {{ corridor.p10_year_built }} and {{ corridor.p90_year_built }}, with the
+      oldest built in {{ corridor.oldest_year_built }} and the newest built in
+      {{ corridor.newest_year_built }}. The building stock is
+      {% if corridor.median_year_built_bin == 5 %} much newer than average
+      {% elif corridor.median_year_built_bin == 4 %} newer than average
+      {% elif corridor.median_year_built_bin == 3 %} around average
+      {% elif corridor.median_year_built_bin == 2 %} older than average
+      {% elif corridor.median_year_built_bin == 1 %} far older than average
+      {% endif %}
+      with respect to other corridors throughout the city,
+      {% if (corridor.median_year_built_bin >= 3 and corridor.median_last_permit_date_bin >= 3)
+         or (corridor.median_year_built_bin <= 3 and corridor.median_last_permit_date_bin <= 3) %}
+        and
+      {% else %}
+        but
+      {% endif %}
+      the most recent work done on those buildings is
+      {% if corridor.median_last_permit_date_bin == 5 %} much more recent than average
+      {% elif corridor.median_last_permit_date_bin == 4 %} more recent than average
+      {% elif corridor.median_last_permit_date_bin == 3 %} around average
+      {% elif corridor.median_last_permit_date_bin == 2 %} less recent than average
+      {% elif corridor.median_last_permit_date_bin == 1 %} far less recent than average
+      {% endif %}
+      with respect to other corridors throughout the city.
+    </p>
+
+    <div id="yearBuiltChart"></div>
+    <div id="lastUpdateDateChart"></div>
+    <div id="lastUpdateDateMap"></div>
+
     <h2>Businesses</h2>
     <h2>Engagement</h2>
   </section>
@@ -115,61 +148,24 @@
    crossorigin=""></script>
 
   <script>
-    var initialCenter = [40.001, -75.134];  // <-- Latitude, Longitude
-    var initialZoom = 11;
-    var overviewMap = L.map('overviewMap').setView(initialCenter, initialZoom);
+    var initialCenter = [{{corridor_map_center.y}}, {{corridor_map_center.x}}];  // <-- Latitude, Longitude
+    var initialZoom = 15;
+    var corridorMap = L.map('corridorMap', {
+      scrollWheelZoom: false
+    }).setView(initialCenter, initialZoom);
 
-    var baseLayer = new L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-background/{z}/{x}/{y}{r}.{ext}', {
+    var baseLayer = new L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.{ext}', {
       	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       	subdomains: 'abcd',
       	minZoom: 0,
       	maxZoom: 20,
       	ext: 'png'
     });
-    baseLayer.addTo(overviewMap);
+    baseLayer.addTo(corridorMap);
 
-    function getOverviewMapStyle(feature) {
-      var category = feature.properties['health_bin'];
-      var featureColor;
-
-      switch (category) {
-        case 1:  featureColor = '#ffffcc'; break;
-        case 2:  featureColor = '#a1dab4'; break;
-        case 3:  featureColor = '#41b6c4'; break;
-        case 4:  featureColor = '#2c7fb8'; break;
-        case 5:  featureColor = '#253494'; break;
-        default: featureColor = 'red'; break;
-      }
-
-      return {
-        color: featureColor,
-        weight: 1,
-        fillColor: featureColor,
-        fillOpacity: 0.7,
-      };
-    }
-
-    var mapdata = {{ overview_map_data }};
-    var dataLayer = L.geoJSON(mapdata, {
-      style: getOverviewMapStyle
-    });
-    dataLayer.addTo(overviewMap);
-
-    var overviewLegend = L.control({position: 'bottomright'});
-    overviewLegend.onAdd = function (map) {
-      var container = L.DomUtil.create('div', 'info legend');
-      container.innerHTML = `
-          <ol>
-            <li><span class="key-color" style="background: #ffffcc;"></span><span class="key-label">Low</span></li>
-            <li><span class="key-color" style="background: #a1dab4;"></span></li>
-            <li><span class="key-color" style="background: #41b6c4;"></span></li>
-            <li><span class="key-color" style="background: #2c7fb8;"></span></li>
-            <li><span class="key-color" style="background: #253494;"></span><span class="key-label">High</span></li>
-          </ol>
-          `;
-      return container;
-    };
-    overviewLegend.addTo(overviewMap);
+    var mapdata = {{ corridor_map_data }};
+    var dataLayer = L.geoJSON(mapdata);
+    dataLayer.addTo(corridorMap);
   </script>
 </body>
 </html>
