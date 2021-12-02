@@ -97,14 +97,14 @@ with DAG(dag_id='data_pipeline',
         op_args=['staging', 'building_base', sql_dir],
     )
     transform_staging_corridor_base_task = PythonOperator(
-    task_id='transform_staging_corridor_base',
-    python_callable=run_transform_gbq,
-    op_args=['staging', 'corridor_base', sql_dir],
+        task_id='transform_staging_corridor_base',
+        python_callable=run_transform_gbq,
+        op_args=['staging', 'corridor_base', sql_dir],
     )
     transform_staging_corridor_filenames_task = PythonOperator(
-    task_id='transform_staging_corridor_filenames',
-    python_callable=run_transform_gbq,
-    op_args=['staging', 'corridor_filenames', sql_dir],
+        task_id='transform_staging_corridor_filenames',
+        python_callable=run_transform_gbq,
+        op_args=['staging', 'corridor_filenames', sql_dir],
     )
     transform_staging_corridor_health_task = PythonOperator(
         task_id='transform_staging_corridor_health',
@@ -112,9 +112,9 @@ with DAG(dag_id='data_pipeline',
         op_args=['staging', 'corridor_health', sql_dir],
     )
     transform_staging_corridor_planning_districts_task = PythonOperator(
-    task_id='transform_staging_corridor_planning_districts',
-    python_callable=run_transform_gbq,
-    op_args=['staging', 'corridor_planning_districts', sql_dir],
+        task_id='transform_staging_corridor_planning_districts',
+        python_callable=run_transform_gbq,
+        op_args=['staging', 'corridor_planning_districts', sql_dir],
     )
     transform_staging_corridor_visit_counts_task = PythonOperator(
         task_id='transform_staging_corridor_visit_counts',
