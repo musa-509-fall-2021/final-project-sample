@@ -14,9 +14,9 @@ corridor_buildings AS (
         CASE
             WHEN prop.year_built IS NULL THEN NULL
             WHEN prop.year_built IN ('0', '0000') THEN NULL
-            ELSE prop.year_built
+            ELSE CAST(prop.year_built AS INTEGER)
         END AS year_built,
-        prop.taxable_building AS internal_sqft,
+        prop.total_livable_area AS internal_sqft,
         ST_GEOGFROMWKB(prop.geometry) AS geog
     FROM city_of_phl.properties AS prop
     JOIN staging.corridor_base AS cor ON ST_CONTAINS(cor.geog, ST_GEOGFROMWKB(prop.geometry))
@@ -25,7 +25,7 @@ corridor_buildings AS (
 most_recent_permits AS (
     SELECT
         perm.opa_account_num AS buildingkey,
-        MAX(perm.permitissuedate) AS last_permit_date
+        PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S%Ez', MAX(perm.permitissuedate)) AS last_permit_date
     FROM city_of_phl.permits AS perm
     JOIN active_or_completed_permits USING (permitnumber)
     JOIN corridor_buildings ON perm.opa_account_num = buildingkey
