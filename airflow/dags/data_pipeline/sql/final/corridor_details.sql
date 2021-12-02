@@ -28,6 +28,7 @@ visit_count_stats AS (
 )
 
 SELECT
+    corridorkey,
     name,
     filename,
     planning_district_name,

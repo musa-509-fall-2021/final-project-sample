@@ -11,6 +11,9 @@ def main(ds):
     corridors_df.geog = gpd.GeoSeries.from_wkt(corridors_df.geog)
     corridors_gdf = gpd.GeoDataFrame(corridors_df, geometry='geog')
 
+    sqft_built_per_decade_df = pd.read_gbq('SELECT * from final.sqft_built_per_decade')
+    sqft_updated_per_year_df = pd.read_gbq('SELECT * from final.sqft_updated_per_year')
+
     # Load the templates.
     template_env = Environment(loader=PackageLoader('generate_report'))
     overview_template = template_env.get_template('index.html')
@@ -25,7 +28,12 @@ def main(ds):
     write_overview(corridors_gdf, overview_template, ds, output_folder)
 
     # Write each of the corridor-specific pages.
-    corridors_gdf.apply(write_corridor, axis=1, args=[corridor_template, ds, output_folder, corridors_gdf])
+    corridors_gdf.apply(write_corridor, axis=1, args=[
+        corridor_template, ds, output_folder,
+        corridors_gdf,
+        sqft_built_per_decade_df,
+        sqft_updated_per_year_df,
+    ])
 
 
 def write_overview(corridors_gdf, template, ds, output_folder):
@@ -35,7 +43,7 @@ def write_overview(corridors_gdf, template, ds, output_folder):
     output = template.render(
         corridors=corridors_gdf.to_dict('records'),
         overview=overview_df.to_dict('records')[0],
-        overview_map_data=corridors_gdf.to_json(),
+        overview_map_data=corridors_gdf[['health_bin', 'geog']].to_json(),
     )
 
     # Write the report to the local folder, and upload to GCS.
@@ -49,12 +57,12 @@ def write_overview(corridors_gdf, template, ds, output_folder):
         )
 
 
-def write_corridor(corridor, template, ds, output_folder, corridors_gdf):
+def write_corridor(corridor, template, ds, output_folder,
+                   corridors_gdf,
+                   sqft_built_per_decade_df,
+                   sqft_updated_per_year_df):
     import json
     import shapely.geometry
-
-    # building_age_df = pd.read_gbq('SELECT * from final.building_year_built_chart')
-    # last_update_age_df = pd.read_gbq('SELECT * from final.building_last_update_date_chart')
 
     # Render the corridor data into a tempate
     output = template.render(
@@ -62,6 +70,8 @@ def write_corridor(corridor, template, ds, output_folder, corridors_gdf):
         corridors=corridors_gdf.to_dict('records'),
         corridor_map_center=corridor.geog.centroid,
         corridor_map_data=json.dumps(shapely.geometry.mapping(corridor.geog)),
+        sqft_built_chart_data=sqft_built_per_decade_df[sqft_built_per_decade_df.corridorkey == corridor.corridorkey].to_dict('list'),
+        sqft_updated_chart_data=sqft_updated_per_year_df[sqft_updated_per_year_df.corridorkey == corridor.corridorkey].to_dict('list'),
     )
 
     with open(output_folder / f'{corridor.filename}.html', 'w') as local_file:
