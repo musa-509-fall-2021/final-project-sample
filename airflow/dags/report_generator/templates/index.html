@@ -157,6 +157,8 @@
     var dataLayer = L.geoJSON(mapdata, {
       style: getOverviewMapStyle
     });
+    dataLayer.bindTooltip(l => `<strong>${l.feature.properties.planning_district_name}</strong><br>${l.feature.properties.name}`)
+    dataLayer.on('click', e => window.location = `${e.layer.feature.properties.filename}.html`)
     dataLayer.addTo(overviewMap);
 
     var overviewLegend = L.control({position: 'bottomright'});

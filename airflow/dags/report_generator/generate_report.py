@@ -43,7 +43,7 @@ def write_overview(corridors_gdf, template, ds, output_folder):
     output = template.render(
         corridors=corridors_gdf.to_dict('records'),
         overview=overview_df.to_dict('records')[0],
-        overview_map_data=corridors_gdf[['health_bin', 'geog']].to_json(),
+        overview_map_data=corridors_gdf[['name', 'planning_district_name', 'filename', 'health_bin', 'geog']].to_json(),
     )
 
     # Write the report to the local folder, and upload to GCS.
