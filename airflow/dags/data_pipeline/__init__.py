@@ -239,10 +239,3 @@ with DAG(dag_id='data_pipeline',
     transform_final_corridors_task << transform_staging_tasks
     transform_final_corridors_overview_task << transform_staging_tasks
     transform_final_corridor_details_task << transform_staging_tasks
-
-    transform_final_tasks = DummyOperator(task_id='wait_for_final_transforms')
-    transform_final_tasks << [
-        transform_final_corridors_task,
-        transform_final_corridors_overview_task,
-        transform_final_corridor_details_task,
-    ]

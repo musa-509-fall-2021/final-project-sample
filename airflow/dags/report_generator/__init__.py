@@ -19,7 +19,7 @@ with DAG(dag_id='report_generator',
     wait_for_data_pipeline_task = ExternalTaskSensor(
         task_id="wait_for_data_pipeline",
         external_dag_id='data_pipeline',
-        external_task_id='wait_for_final_transforms',
+        external_task_id=None,
     )
 
     # DEPENENCIES ~~~~~
