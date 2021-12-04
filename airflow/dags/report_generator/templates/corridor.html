@@ -206,6 +206,7 @@
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     */
+    var currentYear = (new Date()).getFullYear();
     var sqftBuiltChartData = [
       ['Time Since Built (in decades)', ...{{ sqft_built_chart_data['age_in_decades'] }}],
       ['Square Feet Built', ...{{ sqft_built_chart_data['total_internal_sqft'] }}],
@@ -219,14 +220,20 @@
       },
       legend: {show: false},
       axis: {
-        x: {label: {text: 'Time Since Built (in decades)', position: 'outer-center'}},
-        y: {label: {text: 'Square Feet Built', position: 'outer-middle'}},
+        x: {
+          label: {text: 'Decade Built', position: 'outer-center'},
+          tick: {rotate: 60, format: age => `${currentYear - (age + 1) * 10 + 1} - ${currentYear - age * 10}`}
+        },
+        y: {
+          label: {text: 'Square Feet Built', position: 'outer-middle'},
+          tick: {format: d3.format(".2s")},
+        },
       }
     });
 
     /*
 
-        SQFT UPDATED PER DECADE CHART
+        SQFT UPDATED PER YEAR CHART
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     */
@@ -243,8 +250,14 @@
       },
       legend: {show: false},
       axis: {
-        x: {label: {text: 'Time Since Udated (in years)', position: 'outer-center'}},
-        y: {label: {text: 'Square Feet Updated', position: 'outer-middle'}},
+        x: {
+          label: {text: 'Year Last Updated', position: 'outer-center'},
+          tick: {rotate: 60, format: age => `${currentYear - age}`}
+        },
+        y: {
+          label: {text: 'Square Feet Updated', position: 'outer-middle'},
+          tick: {format: d3.format(".2s")},
+        },
       }
     });
 
@@ -296,7 +309,10 @@
       legend: {show: true},
       point: {show: false},
       axis: {
-        x: {type: 'timeseries'},
+        x: {
+          type: 'timeseries',
+          label: {text: 'Visit Date', position: 'outer-center'},
+        },
       }
     });
   </script>
