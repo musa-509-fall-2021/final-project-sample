@@ -117,8 +117,20 @@
    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <script>
+    /*
+
+        CORRIDOR LIST SELECTOR
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    */
     $('#corridorSelect').select2().on('change', evt => { window.location = evt.target.value });
 
+    /*
+
+        OVERVIEW MAP
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    */
     var initialCenter = [40.001, -75.134];  // <-- Latitude, Longitude
     var initialZoom = 11;
     var overviewMap = L.map('overviewMap').setView(initialCenter, initialZoom);

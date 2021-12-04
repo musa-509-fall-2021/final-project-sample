@@ -175,6 +175,12 @@
    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <script>
+    /*
+
+        CORRIDOR MAP
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    */
     var initialCenter = [{{corridor_map_center.y}}, {{corridor_map_center.x}}];  // <-- Latitude, Longitude
     var initialZoom = 15;
     var corridorMap = L.map('corridorMap', {
@@ -194,6 +200,12 @@
     var dataLayer = L.geoJSON(mapdata);
     dataLayer.addTo(corridorMap);
 
+    /*
+
+        SQFT BUILT PER DECADE CHART
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    */
     var sqftBuiltChartData = [
       ['Time Since Built (in decades)', ...{{ sqft_built_chart_data['age_in_decades'] }}],
       ['Square Feet Built', ...{{ sqft_built_chart_data['total_internal_sqft'] }}],
@@ -212,6 +224,12 @@
       }
     });
 
+    /*
+
+        SQFT UPDATED PER DECADE CHART
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    */
     var sqftUpdatedChartData = [
       ['Time Since Updated (in years)', ...{{ sqft_updated_chart_data['age_in_years'] }}],
       ['Square Feet Updated', ...{{ sqft_updated_chart_data['total_internal_sqft'] }}],
@@ -230,6 +248,12 @@
       }
     });
 
+    /*
+
+        DAILY VISITS, YEAR-OVER-YEAR CHART
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    */
     var visitsChartData = [
       ['date', ...{{ visits_chart_data['visit_date'] }}],
       ['y1_visit_count', ...{{ visits_chart_data['y1_visit_count'] }}],
