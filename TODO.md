@@ -4,8 +4,8 @@
     - [x] Corridor health
     - Buildings
       - [x] Median age of buildings in each corridor
-      - [ ] Distribution of building age (grouped by 5-year increments)
-      - [ ] Distribution of building update age (grouped by 5-year increments)
+      - [x] Distribution of building age (grouped by 10-year increments)
+      - [x] Distribution of building update age (grouped by 1-year increments)
       - [ ] Corridor need of renovation: median building/update age -- low (under 5 years), medium (5-15 years), high (over 15 years)
     - Businesses
       - [ ] Number of businesses (by category)
@@ -13,6 +13,7 @@
       - [ ] Share of owners that live within 2 miles (requires a geocoder 🙁)
       - [ ] Diversity of businesses: how many business categories have at least (2? 3?) businesses?
     - Engagement
+      - [x] Number of visitors, year over year
       - [ ] Distance from home block group histogram (for visitors from Philadelphia)
 1.  [x] Consider best way to communicate metrics; for example:
     - Should you use time-series graphs? Density/heat-maps? You're certainly not limited in the number of visualizations you can include.
