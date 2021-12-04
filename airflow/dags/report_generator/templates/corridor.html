@@ -62,6 +62,24 @@
       width: 1rem;
       height: 1rem;
     }
+
+    .c3-line-y1_visit_count,
+    .c3-line-y2_visit_count,
+    .c3-line-y3_visit_count {
+      stroke-width: 0;
+    }
+
+    .c3-line-y1_7day_visit_count,
+    .c3-line-y2_7day_visit_count,
+    .c3-line-y3_7day_visit_count {
+      stroke-width: 2;
+    }
+
+    .c3-tooltip-name--y1_7day_visit_count,
+    .c3-tooltip-name--y2_7day_visit_count,
+    .c3-tooltip-name--y3_7day_visit_count {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -139,6 +157,8 @@
 
     <h2>Businesses</h2>
     <h2>Engagement</h2>
+
+    <div id="visitsChart"></div>
   </section>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"
@@ -207,6 +227,52 @@
       axis: {
         x: {label: {text: 'Time Since Udated (in years)', position: 'outer-center'}},
         y: {label: {text: 'Square Feet Updated', position: 'outer-middle'}},
+      }
+    });
+
+    var visitsChartData = [
+      ['date', ...{{ visits_chart_data['visit_date'] }}],
+      ['y1_visit_count', ...{{ visits_chart_data['y1_visit_count'] }}],
+      ['y1_7day_visit_count', ...{{ visits_chart_data['y1_7day_visit_count'] }}],
+      ['y2_visit_count', ...{{ visits_chart_data['y2_visit_count'] }}],
+      ['y2_7day_visit_count', ...{{ visits_chart_data['y2_7day_visit_count'] }}],
+      ['y3_visit_count', ...{{ visits_chart_data['y3_visit_count'] }}],
+      ['y3_7day_visit_count', ...{{ visits_chart_data['y3_7day_visit_count'] }}],
+    ];
+    var visitsChart = c3.generate({
+      bindto: '#visitsChart',
+      data: {
+        x: 'date',
+        columns: visitsChartData,
+        types: {
+          y1_visit_count: 'area',
+          y1_7day_visit_count: 'spline',
+          y2_visit_count: 'area',
+          y2_7day_visit_count: 'spline',
+          y3_visit_count: 'area',
+          y3_7day_visit_count: 'spline',
+        },
+        colors: {
+          y1_visit_count: 'rgb(31, 119, 180)', // blue
+          y1_7day_visit_count: 'rgb(31, 119, 180)',
+          y2_visit_count: 'rgb(44, 160, 44)', // green
+          y2_7day_visit_count: 'rgb(44, 160, 44)',
+          y3_visit_count: 'rgb(148, 103, 189)', // purple
+          y3_7day_visit_count: 'rgb(148, 103, 189)',
+        },
+        names: {
+          y1_visit_count: 'This past year',
+          y1_7day_visit_count: '7-day average',
+          y2_visit_count: 'One year prior',
+          y2_7day_visit_count: '7-day average',
+          y3_visit_count: 'Two years prior',
+          y3_7day_visit_count: '7-day average',
+        }
+      },
+      legend: {show: true},
+      point: {show: false},
+      axis: {
+        x: {type: 'timeseries'},
       }
     });
   </script>

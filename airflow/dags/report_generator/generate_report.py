@@ -13,6 +13,7 @@ def main(ds):
 
     sqft_built_per_decade_df = pd.read_gbq('SELECT * from final.sqft_built_per_decade')
     sqft_updated_per_year_df = pd.read_gbq('SELECT * from final.sqft_updated_per_year')
+    visits_per_day_df = pd.read_gbq('SELECT * from final.visits_per_day')
 
     # Load the templates.
     template_env = Environment(loader=PackageLoader('generate_report'))
@@ -33,6 +34,7 @@ def main(ds):
         corridors_gdf,
         sqft_built_per_decade_df,
         sqft_updated_per_year_df,
+        visits_per_day_df
     ])
 
 
@@ -60,9 +62,21 @@ def write_overview(corridors_gdf, template, ds, output_folder):
 def write_corridor(corridor, template, ds, output_folder,
                    corridors_gdf,
                    sqft_built_per_decade_df,
-                   sqft_updated_per_year_df):
+                   sqft_updated_per_year_df,
+                   visits_per_day_df):
     import json
     import shapely.geometry
+
+    # Filter data passed in from the main function to only what's relevent for
+    # the current corridor.
+    df = sqft_built_per_decade_df
+    sqft_built_per_decade_df = df[df.corridorkey == corridor.corridorkey]
+
+    df = sqft_updated_per_year_df
+    sqft_updated_per_year_df = df[df.corridorkey == corridor.corridorkey]
+
+    df = visits_per_day_df
+    visits_per_day_df = df[df.corridorkey == corridor.corridorkey]
 
     # Render the corridor data into a tempate
     output = template.render(
@@ -70,8 +84,9 @@ def write_corridor(corridor, template, ds, output_folder,
         corridors=corridors_gdf.to_dict('records'),
         corridor_map_center=corridor.geog.centroid,
         corridor_map_data=json.dumps(shapely.geometry.mapping(corridor.geog)),
-        sqft_built_chart_data=sqft_built_per_decade_df[sqft_built_per_decade_df.corridorkey == corridor.corridorkey].to_dict('list'),
-        sqft_updated_chart_data=sqft_updated_per_year_df[sqft_updated_per_year_df.corridorkey == corridor.corridorkey].to_dict('list'),
+        sqft_built_chart_data=sqft_built_per_decade_df.to_dict('list'),
+        sqft_updated_chart_data=sqft_updated_per_year_df.to_dict('list'),
+        visits_chart_data=visits_per_day_df.to_dict('list'),
     )
 
     with open(output_folder / f'{corridor.filename}.html', 'w') as local_file:
