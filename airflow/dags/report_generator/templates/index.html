@@ -101,6 +101,47 @@
     <p>The corridor that has seen the highest density of visits in the past year is <strong>{{ overview.most_healthy_corridor_name }}</strong>. The corridor that has seen the lowest density of visits in the past year is <strong>{{ overview.least_healthy_corridor_name }}</strong>. On average, across the city, commercial corridors seem [very|moderately|un]healthy.</p>
 
     <div id="overviewMap"></div>
+
+    <h2>Overall Health</h2>
+    <p>Corridor health is calculated by the number of visitors over the last year with respect to the total building square footage of the corridor. The healthiest corridors in the city are:
+      {% for corridor in most_healthy_corridors %}
+        {% if loop.last %} and {% endif %}
+        <a href="{{ corridor.filename }}.html">{{ corridor.name }}</a>
+        {%- if not loop.last %}, {% endif %}
+      {% endfor %}. The least healthy corridors in the city are:
+        {% for corridor in least_healthy_corridors %}
+          {% if loop.last %} and {% endif %}
+          <a href="{{ corridor.filename }}.html">{{ corridor.name }}</a>
+          {%- if not loop.last %}, {% endif %}
+        {% endfor %}.
+    </p>
+
+    <h2>Building Age and Condition</h2>
+    <p>The corridors with the most recent median building age in the city are:
+      {% for corridor in most_recently_built_corridors %}
+        {% if loop.last %} and {% endif %}
+        <a href="{{ corridor.filename }}.html">{{ corridor.name }}</a>
+        {%- if not loop.last %}, {% endif %}
+      {% endfor %}. The corridors with the least recent median building age in the city are:
+        {% for corridor in least_recently_built_corridors %}
+          {% if loop.last %} and {% endif %}
+          <a href="{{ corridor.filename }}.html">{{ corridor.name }}</a>
+          {%- if not loop.last %}, {% endif %}
+        {% endfor %}.
+    </p>
+
+    <p>The corridors with the median most recently updated buildings in the city are:
+      {% for corridor in most_recently_updated_corridors %}
+        {% if loop.last %} and {% endif %}
+        <a href="{{ corridor.filename }}.html">{{ corridor.name }}</a>
+        {%- if not loop.last %}, {% endif %}
+      {% endfor %}. The corridors with the median least recently updated buildings in the city are:
+        {% for corridor in least_recently_updated_corridors %}
+          {% if loop.last %} and {% endif %}
+          <a href="{{ corridor.filename }}.html">{{ corridor.name }}</a>
+          {%- if not loop.last %}, {% endif %}
+        {% endfor %}.
+    </p>
   </section>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"

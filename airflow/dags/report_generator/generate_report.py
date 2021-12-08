@@ -50,6 +50,12 @@ def write_overview(corridors_gdf, template, ds, output_folder):
     # Render the overview data into a template.
     output = template.render(
         corridors=corridors_gdf.to_dict('records'),
+        most_healthy_corridors=corridors_gdf.nlargest(5, 'health').to_dict('records'),
+        least_healthy_corridors=corridors_gdf.nsmallest(5, 'health').to_dict('records'),
+        most_recently_built_corridors=corridors_gdf.nlargest(5, 'p50_year_built').to_dict('records'),
+        least_recently_built_corridors=corridors_gdf.nsmallest(5, 'p50_year_built').to_dict('records'),
+        most_recently_updated_corridors=corridors_gdf.nlargest(5, 'p50_last_permit_date').to_dict('records'),
+        least_recently_updated_corridors=corridors_gdf.nsmallest(5, 'p50_last_permit_date').to_dict('records'),
         overview=overview_df.to_dict('records')[0],
         overview_map_data=corridors_gdf[['name', 'planning_district_name', 'filename', 'health_bin', 'geog']].to_json(),
     )
