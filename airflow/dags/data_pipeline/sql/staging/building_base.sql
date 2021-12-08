@@ -12,14 +12,17 @@ corridor_buildings AS (
         cor.corridorkey,
         prop.parcel_number AS buildingkey,
         CASE
-            WHEN prop.year_built IS NULL THEN NULL
-            WHEN prop.year_built IN ('0', '0000') THEN NULL
-            ELSE CAST(prop.year_built AS INTEGER)
+            WHEN MAX(prop.year_built) IS NULL THEN NULL
+            WHEN MAX(prop.year_built) IN ('0', '0000') THEN NULL
+            ELSE CAST(MAX(prop.year_built) AS INTEGER)
         END AS year_built,
-        prop.total_livable_area AS internal_sqft,
-        ST_GEOGFROMWKB(prop.geometry) AS geog
+        MAX(prop.total_livable_area) AS internal_sqft,
+        ST_GEOGFROMWKB(ANY_VALUE(prop.geometry)) AS geog_point,
+        ST_GEOGFROMTEXT(ANY_VALUE(parcel.geometry)) AS geog
     FROM city_of_phl.properties AS prop
+    JOIN city_of_phl.parcels AS parcel ON parcel.brt_id = prop.parcel_number
     JOIN staging.corridor_base AS cor ON ST_CONTAINS(cor.geog, ST_GEOGFROMWKB(prop.geometry))
+    GROUP BY corridorkey, buildingkey
 ),
 
 most_recent_permits AS (
@@ -38,6 +41,7 @@ SELECT
     year_built,
     internal_sqft,
     last_permit_date,
+    geog_point,
     geog
 FROM corridor_buildings
 LEFT JOIN most_recent_permits USING (buildingkey)

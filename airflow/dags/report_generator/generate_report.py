@@ -13,6 +13,11 @@ def main(ds):
 
     sqft_built_per_decade_df = pd.read_gbq('SELECT * from final.sqft_built_per_decade')
     sqft_updated_per_year_df = pd.read_gbq('SELECT * from final.sqft_updated_per_year')
+
+    buildings_updated_df = pd.read_gbq('SELECT * FROM final.buildings_updated')
+    buildings_updated_df.geog = gpd.GeoSeries.from_wkt(buildings_updated_df.geog)
+    buildings_updated_gdf = gpd.GeoDataFrame(buildings_updated_df, geometry='geog')
+
     visits_per_day_df = pd.read_gbq('SELECT * from final.visits_per_day')
 
     # Load the templates.
@@ -34,6 +39,7 @@ def main(ds):
         corridors_gdf,
         sqft_built_per_decade_df,
         sqft_updated_per_year_df,
+        buildings_updated_gdf,
         visits_per_day_df
     ])
 
@@ -63,6 +69,7 @@ def write_corridor(corridor, template, ds, output_folder,
                    corridors_gdf,
                    sqft_built_per_decade_df,
                    sqft_updated_per_year_df,
+                   buildings_updated_gdf,
                    visits_per_day_df):
     import json
     import shapely.geometry
@@ -75,6 +82,9 @@ def write_corridor(corridor, template, ds, output_folder,
     df = sqft_updated_per_year_df
     sqft_updated_per_year_df = df[df.corridorkey == corridor.corridorkey]
 
+    df = buildings_updated_gdf
+    buildings_updated_gdf = df[df.corridorkey == corridor.corridorkey]
+
     df = visits_per_day_df
     visits_per_day_df = df[df.corridorkey == corridor.corridorkey]
 
@@ -86,6 +96,7 @@ def write_corridor(corridor, template, ds, output_folder,
         corridor_map_data=json.dumps(shapely.geometry.mapping(corridor.geog)),
         sqft_built_chart_data=sqft_built_per_decade_df.to_dict('list'),
         sqft_updated_chart_data=sqft_updated_per_year_df.to_dict('list'),
+        buildings_updated_map_data=buildings_updated_gdf.to_json(),
         visits_chart_data=visits_per_day_df.to_dict('list'),
     )
 

@@ -27,7 +27,8 @@
       margin-left: auto;
       margin-right: auto;
     }
-    #corridorMap {
+    #corridorMap,
+    #buildingsLastUpdatedMap {
       height: 500px;
     }
     #mainNav {
@@ -159,13 +160,24 @@
       with respect to other corridors throughout the city.
     </p>
 
+    <div class="chart-header">
+      How many interior square feet were built each decade?
+    </div>
     <div id="sqftBuiltChart"></div>
+
+    <div class="chart-header">
+      How many square feet were updated each year since 2007?
+    </div>
     <div id="sqftUpdatedChart"></div>
-    <div id="lastUpdateDateMap"></div>
+
+    <div id="buildingsLastUpdatedMap"></div>
 
     <h2>Businesses</h2>
     <h2>Engagement</h2>
 
+    <div class="chart-header">
+      How many visits were tracked for the last 3 years?
+    </div>
     <div id="visitsChart"></div>
   </section>
 
@@ -207,6 +219,7 @@
     var mapdata = {{ corridor_map_data }};
     var dataLayer = L.geoJSON(mapdata);
     dataLayer.addTo(corridorMap);
+    corridorMap.fitBounds(dataLayer.getBounds())
 
     /*
 
@@ -268,6 +281,62 @@
         },
       }
     });
+
+    /*
+
+        BUILDINGS LAST UPDATED MAP
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    */
+    var initialCenter = [{{corridor_map_center.y}}, {{corridor_map_center.x}}];  // <-- Latitude, Longitude
+    var initialZoom = 15;
+    var buildingsLastUpdatedMap = L.map('buildingsLastUpdatedMap', {
+      scrollWheelZoom: false
+    }).setView(initialCenter, initialZoom);
+
+    var buildingsLastUpdatedBaseLayer = new L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.{ext}', {
+      	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      	subdomains: 'abcd',
+      	minZoom: 0,
+      	maxZoom: 20,
+      	ext: 'png'
+    });
+    buildingsLastUpdatedBaseLayer.addTo(buildingsLastUpdatedMap);
+
+    function getBuildingsLastUpdatedMapStyle(feature) {
+      var category = feature.properties['last_permit_date_bin'];
+      var featureColor;
+
+      switch (category) {
+        case 1:  featureColor = '#ffffcc'; break;
+        case 2:  featureColor = '#a1dab4'; break;
+        case 3:  featureColor = '#41b6c4'; break;
+        case 4:  featureColor = '#2c7fb8'; break;
+        case 5:  featureColor = '#253494'; break;
+        default: featureColor = 'red'; break;
+      }
+
+      return {
+        color: featureColor,
+        weight: 1,
+        fillColor: featureColor,
+        fillOpacity: 0.7,
+      };
+    }
+
+    var buildingsLastUpdatedMapdata = {{ buildings_updated_map_data }};
+    var buildingsLastUpdatedDataLayer = L.geoJSON(buildingsLastUpdatedMapdata, {
+      style: getBuildingsLastUpdatedMapStyle
+    });
+    buildingsLastUpdatedDataLayer.bindTooltip(l => `
+      <dl>
+        <dt>Internal Sq. Ft.:</dt>
+        <dd>${l.feature.properties.internal_sqft}</dd>
+        <dt>Last Updated:</dt>
+        <dd>${new Date(l.feature.properties.last_permit_date)}</dd>
+      </dl>`);
+    buildingsLastUpdatedDataLayer.addTo(buildingsLastUpdatedMap);
+    buildingsLastUpdatedMap.fitBounds(buildingsLastUpdatedDataLayer.getBounds())
 
     /*
 

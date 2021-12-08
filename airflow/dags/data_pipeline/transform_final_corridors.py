@@ -21,7 +21,8 @@ def main():
     # run_transform_gbq('final', 'corridor_details', sql_dir)
     # run_transform_gbq('final', 'sqft_built_per_decade', sql_dir)
     # run_transform_gbq('final', 'sqft_updated_per_year', sql_dir)
-    run_transform_gbq('final', 'visits_per_day', sql_dir)
+    # run_transform_gbq('final', 'visits_per_day', sql_dir)
+    run_transform_gbq('final', 'buildings_updated', sql_dir)
 
 if __name__ == '__main__':
     main()
