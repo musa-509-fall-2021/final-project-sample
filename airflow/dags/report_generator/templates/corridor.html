@@ -27,9 +27,11 @@
       margin-left: auto;
       margin-right: auto;
     }
-    #corridorMap,
-    #buildingsLastUpdatedMap {
+    #corridorMap {
       height: 500px;
+    }
+    #buildingsLastUpdatedMap {
+      height: 320px;
     }
     #mainNav {
       grid-area: main-nav;
@@ -170,6 +172,9 @@
     </div>
     <div id="sqftUpdatedChart"></div>
 
+    <div class="chart-header">
+      Where are the buildings that were most recently updated?
+    </div>
     <div id="buildingsLastUpdatedMap"></div>
 
     <h2>Businesses</h2>
@@ -337,6 +342,22 @@
       </dl>`);
     buildingsLastUpdatedDataLayer.addTo(buildingsLastUpdatedMap);
     buildingsLastUpdatedMap.fitBounds(buildingsLastUpdatedDataLayer.getBounds())
+
+    var buildingsLastUpdatedLegend = L.control({position: 'bottomright'});
+    buildingsLastUpdatedLegend.onAdd = function (map) {
+      var container = L.DomUtil.create('div', 'info legend');
+      container.innerHTML = `
+          <ol>
+            <li><span class="key-color" style="background: #ffffcc;"></span><span class="key-label">Least Recent</span></li>
+            <li><span class="key-color" style="background: #a1dab4;"></span></li>
+            <li><span class="key-color" style="background: #41b6c4;"></span></li>
+            <li><span class="key-color" style="background: #2c7fb8;"></span></li>
+            <li><span class="key-color" style="background: #253494;"></span><span class="key-label">Most Recent</span></li>
+          </ol>
+          `;
+      return container;
+    };
+    buildingsLastUpdatedLegend.addTo(buildingsLastUpdatedMap);
 
     /*
 
