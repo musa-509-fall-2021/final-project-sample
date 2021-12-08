@@ -7,12 +7,14 @@ from pipeline_tools import run_transform_gbq
 
 from . import extract_business_licenses
 from . import extract_commercial_corridors
+from . import extract_parcels
 from . import extract_permits
 from . import extract_planning_districts
 from . import extract_properties
 from . import extract_rcos
 from . import load_business_licenses
 from . import load_commercial_corridors
+from . import load_parcels
 from . import load_permits
 from . import load_planning_district_display_info
 from . import load_planning_districts
@@ -34,6 +36,10 @@ with DAG(dag_id='data_pipeline',
     extract_commercial_corridors_task = PythonOperator(
         task_id='extract_commercial_corridors',
         python_callable=extract_commercial_corridors.main,
+    )
+    extract_parcels_task = PythonOperator(
+        task_id='extract_parcels',
+        python_callable=extract_parcels.main,
     )
     extract_permits_task = PythonOperator(
         task_id='extract_permits',
@@ -61,6 +67,10 @@ with DAG(dag_id='data_pipeline',
     load_commercial_corridors_task = PythonOperator(
         task_id='load_commercial_corridors',
         python_callable=load_commercial_corridors.main,
+    )
+    load_parcels_task = PythonOperator(
+        task_id='load_parcels',
+        python_callable=load_parcels.main,
     )
     load_permits_task = PythonOperator(
         task_id='load_permits',
@@ -180,6 +190,7 @@ with DAG(dag_id='data_pipeline',
     load_tasks << [
         load_business_licenses_task,
         load_commercial_corridors_task,
+        load_parcels_task,
         load_permits_task,
         load_planning_district_display_info_task,
         load_planning_districts_task,
