@@ -138,4 +138,6 @@ def run_transform_gbq(dataset_name, table_name, sql_root):
 
     print(f'Creating or replacing table `{dataset_name}.{table_name}`...')
     query_job = client.query(f'CREATE OR REPLACE TABLE `{dataset_name}.{table_name}` AS ({query})')
-    return query_job.result()
+
+    # Wait for the job to finish
+    query_job.result()
