@@ -111,6 +111,11 @@ with DAG(dag_id='data_pipeline',
         python_callable=run_transform_gbq,
         op_args=['staging', 'corridor_base', sql_dir],
     )
+    transform_staging_corridor_buildings_task = PythonOperator(
+        task_id='transform_staging_corridor_buildings',
+        python_callable=run_transform_gbq,
+        op_args=['staging', 'corridor_buildings', sql_dir],
+    )
     transform_staging_corridor_filenames_task = PythonOperator(
         task_id='transform_staging_corridor_filenames',
         python_callable=run_transform_gbq,
@@ -161,26 +166,47 @@ with DAG(dag_id='data_pipeline',
         python_callable=run_transform_gbq,
         op_args=['staging', 'place_visitor_home_cbgs', sql_dir],
     )
-    transform_final_corridors_task = PythonOperator(
-        task_id='transform_final_corridors',
+    transform_final_buildings_updated_task = PythonOperator(
+        task_id='transform_final_buildings_updated',
         python_callable=run_transform_gbq,
-        op_args=['final', 'corridors', sql_dir],
-    )
-    transform_final_corridors_overview_task = PythonOperator(
-        task_id='transform_final_corridors_overview',
-        python_callable=run_transform_gbq,
-        op_args=['final', 'corridors_overview', sql_dir],
+        op_args=['final', 'buildings_updated', sql_dir],
     )
     transform_final_corridor_details_task = PythonOperator(
         task_id='transform_final_corridor_details',
         python_callable=run_transform_gbq,
         op_args=['final', 'corridor_details', sql_dir],
     )
+    transform_final_corridors_overview_task = PythonOperator(
+        task_id='transform_final_corridors_overview',
+        python_callable=run_transform_gbq,
+        op_args=['final', 'corridors_overview', sql_dir],
+    )
+    transform_final_corridors_task = PythonOperator(
+        task_id='transform_final_corridors',
+        python_callable=run_transform_gbq,
+        op_args=['final', 'corridors', sql_dir],
+    )
+    transform_final_sqft_built_per_decade_task = PythonOperator(
+        task_id='transform_final_sqft_built_per_decade',
+        python_callable=run_transform_gbq,
+        op_args=['final', 'sqft_built_per_decade', sql_dir],
+    )
+    transform_final_sqft_updated_per_year_task = PythonOperator(
+        task_id='transform_final_sqft_updated_per_year',
+        python_callable=run_transform_gbq,
+        op_args=['final', 'sqft_updated_per_year', sql_dir],
+    )
+    transform_final_visits_per_day_task = PythonOperator(
+        task_id='transform_final_visits_per_day',
+        python_callable=run_transform_gbq,
+        op_args=['final', 'visits_per_day', sql_dir],
+    )
 
     # DEPENDENCIES ~~~~~
 
     extract_business_licenses_task >> load_business_licenses_task
     extract_commercial_corridors_task >> load_commercial_corridors_task
+    extract_parcels_task >> load_parcels_task
     extract_permits_task >> load_permits_task
     extract_planning_districts_task >> load_planning_districts_task
     extract_properties_task >> load_properties_task
@@ -201,6 +227,7 @@ with DAG(dag_id='data_pipeline',
 
     transform_staging_building_base_task << load_tasks
     transform_staging_corridor_base_task << load_tasks
+    transform_staging_corridor_buildings_task << load_tasks
     transform_staging_corridor_filenames_task << load_tasks
     transform_staging_corridor_health_task << load_tasks
     transform_staging_corridor_planning_districts_task << load_tasks
@@ -235,6 +262,7 @@ with DAG(dag_id='data_pipeline',
     transform_staging_tasks << [
         transform_staging_building_base_task,
         transform_staging_corridor_base_task,
+        transform_staging_corridor_buildings_task,
         transform_staging_corridor_filenames_task,
         transform_staging_corridor_health_task,
         transform_staging_corridor_planning_districts_task,
@@ -247,6 +275,10 @@ with DAG(dag_id='data_pipeline',
         transform_staging_place_visitor_home_cbgs_task,
     ]
 
-    transform_final_corridors_task << transform_staging_tasks
-    transform_final_corridors_overview_task << transform_staging_tasks
+    transform_final_buildings_updated_task << transform_staging_tasks
     transform_final_corridor_details_task << transform_staging_tasks
+    transform_final_corridors_overview_task << transform_staging_tasks
+    transform_final_corridors_task << transform_staging_tasks
+    transform_final_sqft_built_per_decade_task << transform_staging_tasks
+    transform_final_sqft_updated_per_year_task << transform_staging_tasks
+    transform_final_visits_per_day_task << transform_staging_tasks
