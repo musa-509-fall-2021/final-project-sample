@@ -21,10 +21,10 @@ year_built_order AS (
 date_updated_order AS (
     SELECT
         corridorkey,
-        most_recent_permit_issue_date,
+        last_permit_date,
         SUM(internal_sqft) OVER (
             PARTITION BY corridorkey
-            ORDER BY most_recent_permit_issue_date) AS cumulative_internal_sqft
+            ORDER BY last_permit_date) AS cumulative_internal_sqft
     FROM staging.building_base
 ),
 
@@ -60,7 +60,7 @@ median_year_built AS (
 median_date_updated AS (
     SELECT
         corridorkey,
-        ANY_VALUE(most_recent_permit_issue_date) AS median_date_updated,
+        ANY_VALUE(last_permit_date) AS median_date_updated,
     FROM date_updated_order
     JOIN median_date_updated_order_sqft USING (corridorkey, cumulative_internal_sqft)
     GROUP BY corridorkey

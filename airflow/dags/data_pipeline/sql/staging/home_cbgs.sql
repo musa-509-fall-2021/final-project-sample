@@ -3,7 +3,7 @@
 WITH
 
 home_cbg_ids AS (
-  SELECT DISTINCT geo_id
+  SELECT DISTINCT visitor_home_geo_id AS geo_id
   FROM staging.place_visitor_home_cbgs
 )
 
