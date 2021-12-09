@@ -32,3 +32,6 @@
 1.  [x] Configure a GCS
 1.  [ ] Convert mockup(s) to template(s)
 1.  [ ] Create scripts to render template(s) for dashboard page(s)
+
+If there's time:
+1.  [ ] Add near-by corridors on the corridor detail map
