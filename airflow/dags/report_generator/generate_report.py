@@ -2,7 +2,7 @@ import geopandas as gpd
 import pandas as pd
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from jinja2 import Environment, PackageLoader
+from jinja2 import Environment, FileSystemLoader
 from pipeline_tools import local_file_to_gcs
 
 def main(ds):
@@ -21,13 +21,14 @@ def main(ds):
     visits_per_day_df = pd.read_gbq('SELECT * from final.visits_per_day')
 
     # Load the templates.
-    template_env = Environment(loader=PackageLoader('generate_report'))
+    templates_folder = Path(__file__).parent / 'templates'
+    template_env = Environment(loader=FileSystemLoader(templates_folder))
     overview_template = template_env.get_template('index.html')
     corridor_template = template_env.get_template('corridor.html')
 
     # Determine the folder to save the rendered report pages into; create it if
     # it doesn't already exist. E.g.: report_generator/_reports/2021-11-22/
-    output_folder = Path(__file__).parent / '_reports' / ds.isoformat()
+    output_folder = Path(__file__).parent / '_reports' / ds
     output_folder.mkdir(parents=True, exist_ok=True)
 
     # Write the overview.
@@ -117,4 +118,4 @@ def write_corridor(corridor, template, ds, output_folder,
 
 if __name__ == '__main__':
     import datetime as dt
-    main(ds=dt.date.today())
+    main(ds=dt.date.today().isoformat())
