@@ -18,7 +18,7 @@ def main(ds):
     df['geometry'] = gdf.geometry.apply(str)
     del gdf
 
-    df.to_gbq('city_of_phl.parcels')
+    df.to_gbq('city_of_phl.parcels', if_exists='replace')
 
     print('Done.')
 
